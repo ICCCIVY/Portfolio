@@ -5,17 +5,22 @@ body {
     box-sizing: border-box;
     scroll-behavior: smooth;
     background: #f9f9f9;
+    padding-top: 70px;
   }
   
+  
+
   header {
     position: fixed;
     top: 0;
     width: 100%;
-    background: transparent; /* Change from #333 to transparent */
-    padding: 20px 0;
+    background: white; /* Change from transparent to solid white */
+    padding: 15px 0;
     z-index: 1000;
-    box-shadow: none; /* Remove shadow if any */
-  }
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow to separate it from content */
+}
+
+
   nav ul {
     list-style: none;
     display: flex;
@@ -304,3 +309,147 @@ body {
     background: #ddd;
   }
   
+  /* Responsive Design */
+@media screen and (max-width: 768px) {
+  /* Narrow down the navbar without changing alignment */
+  nav ul {
+    gap: 20px;
+  }
+
+  /* Ensure About section remains horizontal */
+  .about-container {
+    flex-direction: row !important; /* Keep it horizontal */
+    align-items: center;
+    text-align: left;
+    gap: 15px;
+  }
+
+  .photo-container {
+    max-width: 120px; /* Make the image smaller */
+  }
+
+  .about-text {
+    font-size: 0.9rem; /* Slightly reduce font size */
+    flex: 2;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* Keep navbar compact but aligned */
+  nav ul {
+    gap: 15px;
+  }
+
+  /* Keep About section horizontal in narrower screens */
+  .about-container {
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+
+  .photo-container {
+    max-width: 100px; /* Reduce image size for very small screens */
+  }
+
+  .about-text {
+    font-size: 0.8rem;
+  }
+}
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  /* Narrow down the navbar without changing alignment */
+  nav ul {
+    gap: 20px;
+  }
+
+  /* Ensure About section remains horizontal */
+  .about-container {
+    flex-direction: row !important; /* Keep it horizontal */
+    align-items: center;
+    text-align: left;
+    gap: 15px;
+  }
+
+  .photo-container {
+    max-width: 120px; /* Make the image smaller */
+  }
+
+  .about-text {
+    font-size: 0.9rem; /* Slightly reduce font size */
+    flex: 2;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* Keep navbar compact but aligned */
+  nav ul {
+    gap: 15px;
+  }
+
+  /* Keep About section horizontal in narrower screens */
+  .about-container {
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+
+  .photo-container {
+    max-width: 100px; /* Reduce image size for very small screens */
+  }
+
+  .about-text {
+    font-size: 0.8rem;
+  }
+}
+
+
+  
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  /* Narrow down navbar */
+  nav ul {
+    gap: 20px;
+  }
+
+  /* About section: Make photo go on top, text below, and center everything */
+  .about-container {
+    flex-direction: column !important; /* Stack items vertically */
+    align-items: center;
+    text-align: center;
+  }
+
+  .photo-container {
+    max-width: 500px; /* Reduce image size */
+  }
+
+  .about-text {
+    font-size: 0.9rem; /* Keep text readable */
+    max-width: 90%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* Keep navbar compact but aligned */
+  nav ul {
+    gap: 15px;
+  }
+
+  /* Ensure photo is on top and text is below */
+  .about-container {
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .photo-container {
+    max-width: 120px; /* Further reduce image size for very small screens */
+  }
+
+  .about-text {
+    font-size: 0.8rem;
+    max-width: 90%;
+  }
+}
