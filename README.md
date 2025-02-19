@@ -91,7 +91,7 @@ Security group:
 ssh -i /Users/qiyuchen/.ssh/linux-key.pem ubuntu@3.82.122.76
 ```
 ### Step 2 Install Caddy
-Caddy will handle automatic HTTPS and act as a reverse proxy for Flask app.
+Caddy will serve as a reverse proxy, forwarding client requests to Flask running on `127.0.0.1:5000`. It also automates SSL certificate management, enabling HTTPS.
 
 1. Install Dependencies and Caddy
 ```
@@ -124,14 +124,14 @@ sudo apt install -y python3-venv
 python3 -m venv venv
 source venv/bin/activate
 ```
-3. Install Flask and Gunicorn
+3. Install Flask and `Gunicorn`
 ```
 pip install flask-session gunicorn
 ```
 ### Step 5 Configure Caddy for the Domain
 Since I set up `portfolio.play.qiyu.lol` as my domain, I need to configure Caddy.
 
-1. Edit the Caddyfile:
+1. Edit the `Caddyfile`:
 ```
 sudo nano /etc/caddy/Caddyfile
 ```
@@ -149,14 +149,16 @@ Caddy will forward all traffic from `portfolio.play.qiyu.lol` to my Flask app ru
 ```
 sudo systemctl restart caddy
 ```
-### Step 6 Set Up Gunicorn (WSGI Server)
-Flask’s built-in server (flask run) is meant for development and cannot handle concurrent requests efficiently. Gunicorn is a production-ready WSGI server that allows multiple users to access the site at once.
+### Step 6 Set Up `Gunicorn` (WSGI Server)
+Flask’s built-in server (`flask run`) is meant for development and cannot handle concurrent requests efficiently. Gunicorn is a production-ready WSGI server that allows multiple users to access the site at once.
 
 1. Run Gunicorn Manually (For Testing)
 ```
 gunicorn -w 4 -b 0.0.0.0:5000 app:app
 ```
-2. Set Up Gunicorn as a Systemd Service
+2. Set Up `Gunicorn` as a Systemd Service
+
+`Gunicorn` is running as a systemd service, which means it will automatically start Flask and keep it running in the background.
 
 ```
 sudo nano /etc/systemd/system/gunicorn.service
@@ -176,7 +178,7 @@ ExecStart=/home/ubuntu/venv/bin/gunicorn -w 4 -b 0.0.0.0:5000 app:app
 [Install]
 WantedBy=multi-user.target
 ```
-3. Start Gunicorn
+3. Start `Gunicorn`
 ```
 sudo systemctl daemon-reload
 sudo systemctl start gunicorn
