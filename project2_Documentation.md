@@ -20,7 +20,7 @@ pip install Flask Flask-Session Authlib
 ```
 2. Set Up OAuth Credentials:
 
-- Go to Google Cloud Console.
+- Go to the [Google Cloud Console](https://console.cloud.google.com/).
 
 - Create OAuth 2.0 Client ID (Web Application).
 
@@ -92,29 +92,58 @@ sudo systemctl restart gunicorn
 
 ### Step 2: Adding GitHub Contributions Section
 
+Source: [github-contributions-widget](https://github.com/imananoosheh/github-contributions-widget)
 
+1. Include the Script:
+
+Add the following to head tag in HTML file:
+```
+<script type="module" defer src="https://cdn.jsdelivr.net/gh/imanasoosheh/github-contributions-widget@latest/dist/github-contributions-widget.js"></script>
+```
+2. Add a container in HTML where I want the calendar to appear
+```
+<!-- GitHub Contributions Calendar -->
+<div class="github-calendar-wrapper">
+  <div class="calendar-align">
+    <div id="calendar-component"
+         username="ICCCIVY"
+         background-color="#FFFFFF"
+         theme-color="#FFC0CB">
+    </div>
+  </div>
+</div>
+```
+3. Final result look like this:
+
+![widget](static/project2_sc/widget.png)
 
 
 ## Part2 High-Availability Setup with Load Balancing
 
+This documentation outlines the steps to set up a high-availability architecture for a portfolio website using two Nginx reverse proxies and one HAProxy instance for load balancing.
+
+
 ### Step 1 Preparing Nginx Instances
 
-lauch 2 instance 
-
-back-1 184.72.134.13
+1. Launch Two EC2 Instances:
+- back-1 `184.72.134.13`
+```
 ssh -i /Users/qiyuchen/.ssh/linux-key.pem ubuntu@184.72.134.13
-back-2 54.90.237.63
+```
+- back-2 `54.90.237.63`
+```
 ssh -i /Users/qiyuchen/.ssh/linux-key.pem ubuntu@54.90.237.63
-
-install nginx
+```
+2. Install Nginx on Both Instances:
 ```
 sudo apt update
 sudo apt install nginx -y
 ```
-Edit Nginx Configuration for Load Balancing:
+3. Configure Nginx as a Reverse Proxy:
 ```
-sudo nano /etc/nginx/sites-available/load_balancer.conf
+sudo nano /etc/nginx/sites-available/reverse_proxy.conf
 ```
+- Paste the following:
 ```
 server {
     listen 80;
@@ -131,32 +160,39 @@ server {
     }
 }
 ```
-Enable your config and disable default
+4. Enable the Config and Remove Default
 ```
 sudo ln -s /etc/nginx/sites-available/reverse_proxy.conf /etc/nginx/sites-enabled/
 sudo rm /etc/nginx/sites-enabled/default
 ```
-Test and restart Nginx
+5. Restart Nginx
 ```
 sudo nginx -t
 sudo systemctl restart nginx
 ```
-
+6. Test with `curl `
+```
 curl https://portfolio.play.qiyu.lol
+```
+![back1](static/project2_sc/back1_curl.png)
+
+![back2](static/project2_sc/back2_curl.png)
 
 ### Step 2 Configuring HAProxy
+1. Launch a Third EC2 Instances for HAProxy
+```
 ssh -i /Users/qiyuchen/.ssh/linux-key.pem ubuntu@3.90.190.171
-
-Install HAProxy SSH into the HAProxy instance and install HAProxy:
+```
+2. Install HAProxy:
 ```
 sudo apt update
 sudo apt install haproxy -y
 ```
-Configure HAProxy with AWS Backend Servers Open the HAProxy configuration file:
+3. Configure HAProxy:
 ```
 sudo nano /etc/haproxy/haproxy.cfg
 ```
-Set up a frontend to listen on port 80 and define your backend servers:
+4. Append the following configuration:
 ```
 frontend http_front
     bind *:80
@@ -167,6 +203,45 @@ backend aws_backends
     server back-1 172.31.20.181:80 check
     server back-2 172.31.25.142:80 check
 ```
-
+5. Restart HAProxy:
+```
 sudo systemctl restart haproxy
 sudo systemctl status haproxy
+```
+6. Test 
+```
+curl 3.90.190.171
+```
+## Part 3: Scalability, Performance, and Documentation 
+To test the reliability and responsiveness of HAProxy load-balanced portfolio setup, I simulated concurrent traffic using Apache Bench:
+
+### Step 1: Scalability and Performance Testing
+
+1. Launch a New EC2 Instance for Testing
+```
+ssh -i /Users/qiyuchen/.ssh/linux-key.pem ubuntu@3.86.241.20
+```
+2. Install Apache Benchmark
+```
+sudo apt update
+sudo apt install apache2-utils -y
+```
+3. Run:
+```
+ab -n 100 -c 10 http://3.90.190.171/
+```
+This tells ApacheBench (ab) to:
+- -n 100 → Send 100 total requests
+- -c 10 → Send 10 requests at a time (concurrent)
+
+![test](static/project2_sc/test.png)
+
+- Total Requests: 100
+- Concurrency Level: 10
+- Failed Requests: 0 
+- Requests Per Second: 545.50 [#/sec] (mean)
+- Mean Time Per Request: 18.33 ms
+- Transfer Rate: 2686.50 Kbytes/sec
+- Max Request Time: 27 ms
+
+This shows that the HAProxy instance successfully distributed traffic between two backend Nginx instances. All requests were processed under 27 ms, indicating excellent performance under concurrent load.
