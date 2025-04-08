@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio</title>
   <link rel="stylesheet" href="/static/style.css">
+  <script type="module" defer src="https://cdn.jsdelivr.net/gh/imananoosheh/github-contributions-widget/github_calendar_widget.js"></script>
+
 </head>
 <body>
   <header>
@@ -13,11 +15,12 @@
         <li><a href="#about">About</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#contact">Contact</a></li>
-        {% if user_role == "admin" %}
-          <li><a href="#">Welcome, Qiyu</a></li>
-          <li><a href="/logout">Logout</a></li>
-        {% else %}
+        {% if user_role == "tourist" %}
           <li><a href="/login">Login</a></li>
+          <li><a href="/login/google">Sign in with Google</a></li>
+        {% else %}
+          <li><a href="#">Welcome, {{ username }}</a></li>
+          <li><a href="/logout">Logout</a></li>
         {% endif %}
       </ul>
       
@@ -32,6 +35,7 @@
       <p>Aspiring IT Professional</p>
       <div class="buttons">
         <a href="{{ url_for('static', filename='resume.pdf') }}" target="_blank">Download CV</a>
+      
 
 
         <a href="#contact">Contact Info</a>
@@ -43,6 +47,12 @@
         <a href="https://github.com/ICCCIVY" target="_blank">
           <img src="https://img.icons8.com/ios-filled/50/000000/github.png" alt="GitHub">
         </a>
+      </div>
+      <!-- GitHub Contributions Calendar --> 
+      <div class="github-calendar-wrapper"> 
+        <div class="calendar-align">
+         <div id="calendar-component" username="ICCCIVY"  background-color="#FFFFFF"  theme-color="#FFC0CB"> </div>
+        </div>    
       </div>
     </div>
   </section>
@@ -113,3 +123,4 @@
   <script src="/static/main.js"></script>
 </body>
 </html>
+
